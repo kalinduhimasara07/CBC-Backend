@@ -77,3 +77,26 @@ export async function updateProduct(req, res) {
     res.status(500).json({ message: "Internal Server Error", error: error });
   }
 }
+
+export async function getProductById(req, res) {
+  const productId = req.params.productId;
+  try {
+    const product = await Product.findOne({ productId: productId });
+    if (product == null) {
+      res.status(404).json({ message: "Product not found" });
+      return;
+    }
+    if (product.isAvailable) {
+      res.json(product);
+    } else {
+      if (isAdmin(req, res)) {
+        res.json(product);
+      } else {
+        res.status(404).json({ message: "Product not found" });
+        return;
+      }
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error", error: error });
+  }
+}
