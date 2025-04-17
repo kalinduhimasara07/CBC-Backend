@@ -10,3 +10,19 @@ export async function getReviews(req, res) {
     res.status(500).json({ error: "Error fetching reviews" });
   }
 }
+
+export async function createReview(req, res) {
+  const reviewInfo = req.body;
+  const email = req.user.email;
+  const name = req.user.firstName + " " + req.user.lastName;
+  reviewInfo.email = email;
+  reviewInfo.name = name;
+  const review = new Review(reviewInfo);
+  try {
+    await review.save();
+    res.json({ message: "Review saved successfully" });
+  } catch (error) {
+    console.error("Error saving review:", error);
+    res.status(500).json({ error: "Error saving review" });
+  }
+}
