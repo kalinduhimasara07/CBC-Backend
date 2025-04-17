@@ -12,6 +12,10 @@ export async function getReviews(req, res) {
 }
 
 export async function createReview(req, res) {
+  if (req.user == null) {
+    res.status(403).json({ error: "Please login and try again" });
+    return;
+  }
   const reviewInfo = req.body;
   const email = req.user.email;
   const name = req.user.firstName + " " + req.user.lastName;
