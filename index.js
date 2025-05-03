@@ -45,10 +45,10 @@ mongoose
     console.error("Error connecting to MongoDB:", error);
   });
 
-app.use("/product", productRouter);
-app.use("/users", userRouter);
-app.use("/orders", orderRouter);
-app.use("/reviews", reviewRouter);
+app.use("/api/product", productRouter);
+app.use("/api/users", userRouter);
+app.use("/api/orders", orderRouter);
+app.use("/api/reviews", reviewRouter);
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
