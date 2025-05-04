@@ -7,12 +7,13 @@ import Jwt from "jsonwebtoken";
 import orderRouter from "./routes/orderRouter.js";
 import reviewRouter from "./routes/reviewRouter.js";
 import cors from "cors";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
-
 
 app.use((req, res, next) => {
   const tokenString = req.header("Authorization");
@@ -35,9 +36,7 @@ app.use((req, res, next) => {
 });
 
 mongoose
-  .connect(
-    "mongodb+srv://admin:123@cluster0.n07ll.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-  )
+  .connect(process.env.MONGODB_URl)
   .then(() => {
     console.log("Connected to MongoDB");
   })
