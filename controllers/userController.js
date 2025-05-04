@@ -1,6 +1,8 @@
 import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
 export function createUser(req, res) {
   if (req.body.role == "admin") {
@@ -46,7 +48,9 @@ export function loginUser(req, res) {
   User.findOne({ email: email }).then((user) => {
     console.log(user);
     if (!user) {
-      res.status(404).json({ error: "User not found" , message: "User not found"});
+      res
+        .status(404)
+        .json({ error: "User not found", message: "User not found" });
     } else {
       const isPasswordValid = bcrypt.compareSync(password, user.password);
       if (isPasswordValid) {
@@ -58,12 +62,17 @@ export function loginUser(req, res) {
             role: user.role,
             img: user.img,
           },
-          "secretKey"
+          process.env.JWT_SECRET_KEY
         );
         console.log(token);
         res.json({ message: "Login successful", token: token });
       } else {
-        res.status(401).json({ error: "Invalid credentials" ,message: "Invalid credentials"});
+        res
+          .status(401)
+          .json({
+            error: "Invalid credentials",
+            message: "Invalid credentials",
+          });
       }
     }
   });

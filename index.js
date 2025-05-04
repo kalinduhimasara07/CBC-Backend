@@ -19,7 +19,7 @@ app.use((req, res, next) => {
   const tokenString = req.header("Authorization");
   if (tokenString != null) {
     const token = tokenString.replace("Bearer ", "");
-    Jwt.verify(token, "secretKey", (err, decoded) => {
+    Jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
       if (decoded != null) {
         //console.log(decoded);
         req.user = decoded; //attach the user object to the request
