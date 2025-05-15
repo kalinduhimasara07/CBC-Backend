@@ -65,14 +65,16 @@ export function loginUser(req, res) {
           process.env.JWT_SECRET_KEY
         );
         console.log(token);
-        res.json({ message: "Login successful", token: token });
+        res.json({
+          message: "Login successful",
+          token: token,
+          role: user.role,
+        });
       } else {
-        res
-          .status(401)
-          .json({
-            error: "Invalid credentials",
-            message: "Invalid credentials",
-          });
+        res.status(401).json({
+          error: "Invalid credentials",
+          message: "Invalid credentials",
+        });
       }
     }
   });
