@@ -4,6 +4,8 @@ const reviewSchema = mongoose.Schema({
   productId: { type: String, required: true },
   email: { type: String, required: true },
   name: { type: String, required: true },
+  date: { type: Date, required: true },
+  profileImg: { type: String, required: true },
   rating: { type: Number, required: true },
   comment: { type: String, required: true },
 });
