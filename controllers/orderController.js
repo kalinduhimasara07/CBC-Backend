@@ -98,3 +98,21 @@ export async function createOrder(req, res) {
     res.status(500).json({ error: "Error creating order" });
   }
 }
+
+export async function getOrder(req, res) {
+  if (req.user == null) {
+    res.status(403).json({ error: "Please login and try again" });
+    return;
+  }
+  try {
+    if (req.user == "admin") {
+      const orders = await Order.find({});
+      return res.json(orders);
+    } else {
+      const orders = await Order.find({ email: req.user.email });
+      return res.json(orders);
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching order" });
+  }
+}
