@@ -37,26 +37,20 @@ export async function createOrder(req, res) {
         productId: orderInfo.products[i].productId,
       });
       if (item == null) {
-        res
-          .status(404)
-          .json({
-            message:
-              "Product with id " +
-              orderInfo.products[i].productId +
-              " not found",
-          });
+        res.status(404).json({
+          message:
+            "Product with id " + orderInfo.products[i].productId + " not found",
+        });
         return;
       }
 
       if (item.isAvailable == false) {
-        res
-          .status(404)
-          .json({
-            message:
-              "Product with id " +
-              orderInfo.products[i].productId +
-              " is not available right now",
-          });
+        res.status(404).json({
+          message:
+            "Product with id " +
+            orderInfo.products[i].productId +
+            " is not available right now",
+        });
         return;
       }
       products[i] = {
@@ -74,6 +68,10 @@ export async function createOrder(req, res) {
 
       total += orderInfo.products[i].quantity * item.price;
       labeledTotal += orderInfo.products[i].quantity * item.labeledPrice;
+      // const shipping = orderInfo.shipping || 0;
+      // const tax = orderInfo.tax || 0;
+      // const grandTotal = total + shipping + tax;
+      // total = grandTotal;
     }
 
     const order = new Order({
@@ -82,9 +80,17 @@ export async function createOrder(req, res) {
       name: orderInfo.name,
       phone: orderInfo.phone,
       address: orderInfo.address,
+      city: orderInfo.city,
+      state: orderInfo.state,
+      zip: orderInfo.zip,
       products: products,
       labeledTotal: labeledTotal,
-      total: total,
+      total: parseFloat(total.toFixed(2)), // Ensure total is a float with 2 decimal places
+      shipping: orderInfo.shipping || 0,
+      tax: orderInfo.tax || 0,
+      grandTotal: parseFloat(
+        total + (orderInfo.shipping || 0) + (orderInfo.tax || 0)
+      ).toFixed(2),
     });
     const createdOrder = await order.save();
     res.json({ message: "Order created successfully", order: createdOrder });

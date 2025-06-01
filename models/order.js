@@ -27,11 +27,37 @@ const orderSchema = mongoose.Schema({
     required: true,
     default: "pending",
   },
+  city: {
+    type: String,
+    required: true,
+  },
+  state: {
+    type: String,
+    required: true,
+  },
+  zip: {
+    type: String,
+    required: true,
+  },
   labeledTotal: {
     type: Number,
     required: true,
   },
   total: {
+    type: Number,
+    required: true,
+  },
+  shipping: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
+  tax: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
+  grandTotal: {
     type: Number,
     required: true,
   },
