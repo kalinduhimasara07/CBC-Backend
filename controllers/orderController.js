@@ -116,3 +116,27 @@ export async function getOrder(req, res) {
     res.status(500).json({ error: "Error fetching order" });
   }
 }
+
+export async function changeOrderStatus(req, res) {
+  try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ error: "You are not authorized" });
+    }
+
+    const { orderId, status } = req.body;
+
+    const updatedOrder = await Order.findOneAndUpdate({ orderId }, { status });
+
+    if (!updatedOrder) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    return res.json({
+      message: "Order status updated successfully",
+      order: updatedOrder,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Server error" });
+  }
+}
