@@ -105,3 +105,25 @@ export function getUsers(req, res) {
       res.status(500).json({ error: "Error fetching users" });
     });
 }
+
+//block user
+export function blockUser(req, res) {
+  if (!isAdmin(req, res)) {
+    return res
+      .status(403)
+      .json({ error: "You are not authorized to block users" });
+  }
+  const email = req.body.email;
+  const status = req.body.status;
+  User.findOneAndUpdate({ email: email }, { isBlocked: status })
+    .then((user) => {
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      res.json({ message: "User block status updated successfully", user });
+    })
+    .catch((error) => {
+      console.error("Error blocking user:", error);
+      res.status(500).json({ error: "Error blocking user" });
+    });
+}
