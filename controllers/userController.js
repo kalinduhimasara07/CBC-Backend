@@ -54,22 +54,29 @@ export function loginUser(req, res) {
     } else {
       const isPasswordValid = bcrypt.compareSync(password, user.password);
       if (isPasswordValid) {
-        const token = jwt.sign(
-          {
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
+        if (user.isBlocked) {
+          return res.status(403).json({
+            error: "User is blocked",
+            message: "You are blocked. Please contact support.",
+          });
+        } else {
+          const token = jwt.sign(
+            {
+              email: user.email,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              role: user.role,
+              img: user.img,
+            },
+            process.env.JWT_SECRET_KEY
+          );
+          console.log(token);
+          res.json({
+            message: "Login successful",
+            token: token,
             role: user.role,
-            img: user.img,
-          },
-          process.env.JWT_SECRET_KEY
-        );
-        console.log(token);
-        res.json({
-          message: "Login successful",
-          token: token,
-          role: user.role,
-        });
+          });
+        }
       } else {
         res.status(401).json({
           error: "Invalid credentials",
