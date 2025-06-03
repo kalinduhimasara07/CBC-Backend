@@ -89,3 +89,19 @@ export function isAdmin(req, res) {
   }
   return true;
 }
+
+export function getUsers(req, res) {
+  if (!isAdmin(req, res)) {
+    return res
+      .status(403)
+      .json({ error: "You are not authorized to view users" });
+  }
+  User.find({})
+    .then((users) => {
+      res.json(users);
+    })
+    .catch((error) => {
+      console.error("Error fetching users:", error);
+      res.status(500).json({ error: "Error fetching users" });
+    });
+}
