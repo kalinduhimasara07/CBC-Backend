@@ -2,6 +2,7 @@ import express from "express";
 import {
   blockUser,
   createUser,
+  getuser,
   getUsers,
   loginUser,
 } from "../controllers/userController.js";
@@ -12,5 +13,6 @@ userRouter.post("/", createUser);
 userRouter.post("/login", loginUser);
 userRouter.get("/", getUsers);
 userRouter.put("/", blockUser);
+userRouter.get("/user", getuser);
 
 export default userRouter;

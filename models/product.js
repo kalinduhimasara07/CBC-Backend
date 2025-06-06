@@ -45,7 +45,9 @@ const productSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-});
+},{
+    timestamps: true, // ✅ this adds `createdAt` and `updatedAt`
+  });
 const Product = mongoose.model("products", productSchema);
 
 export default Product;
