@@ -175,8 +175,6 @@ export async function googleLogin(req, res) {
       }
     );
 
-    console.log(response.data);
-
     const userData = response.data;
     let user = await User.findOne({ email: userData.email });
 
@@ -191,7 +189,6 @@ export async function googleLogin(req, res) {
         },
         process.env.JWT_SECRET_KEY
       );
-      console.log("find user");
       return res.json({
         message: "Login successful",
         token: jwtToken,
