@@ -2,6 +2,7 @@ import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import axios from "axios";
 dotenv.config();
 
 export function createUser(req, res) {
@@ -145,7 +146,8 @@ export function getuser(req, res) {
 
   jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
     if (err) {
-      return res.status(401).json({ error: "Invalid token" });
+      // return res.status(401).json({ error: "Invalid token" });
+      return;
     }
 
     User.findOne({ email: decoded.email })
@@ -159,4 +161,76 @@ export function getuser(req, res) {
         res.status(500).json({ error: "Error fetching user" });
       });
   });
+}
+
+export async function googleLogin(req, res) {
+  const googleToken = req.body.token;
+  try {
+    const response = await axios.get(
+      "https://www.googleapis.com/oauth2/v3/userinfo",
+      {
+        headers: {
+          Authorization: `Bearer ${googleToken}`,
+        },
+      }
+    );
+
+    console.log(response.data);
+
+    const userData = response.data;
+    let user = await User.findOne({ email: userData.email });
+
+    if (user) {
+      const jwtToken = jwt.sign(
+        {
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role,
+          img: user.img,
+        },
+        process.env.JWT_SECRET_KEY
+      );
+      console.log("find user");
+      return res.json({
+        message: "Login successful",
+        token: jwtToken,
+        role: user.role,
+      });
+    } else {
+      const hashedPassword = await bcrypt.hash(
+        process.env.DEFAULT_PASSWORD,
+        10
+      );
+      user = new User({
+        email: userData.email,
+        firstName: userData.given_name,
+        lastName: userData.family_name,
+        img: userData.picture,
+        role: "customer",
+        password: hashedPassword,
+      });
+      await user.save();
+
+      const jwtToken = jwt.sign(
+        {
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role,
+          img: user.img,
+        },
+        process.env.JWT_SECRET_KEY
+      );
+
+      return res.status(201).json({
+        message: "Account created successfully",
+        token: jwtToken,
+        role: user.role,
+      });
+    }
+  } catch (error) {
+    console.error("Error logging in with Google:", error.message);
+    return res.status(500).json({ error: "Google login failed" });
+  }
 }

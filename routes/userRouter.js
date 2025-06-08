@@ -4,6 +4,7 @@ import {
   createUser,
   getuser,
   getUsers,
+  googleLogin,
   loginUser,
 } from "../controllers/userController.js";
 
@@ -14,5 +15,6 @@ userRouter.post("/login", loginUser);
 userRouter.get("/", getUsers);
 userRouter.put("/", blockUser);
 userRouter.get("/user", getuser);
+userRouter.post("/google", googleLogin);
 
 export default userRouter;
