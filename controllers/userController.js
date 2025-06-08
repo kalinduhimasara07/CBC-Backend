@@ -146,8 +146,7 @@ export function getuser(req, res) {
 
   jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
     if (err) {
-      // return res.status(401).json({ error: "Invalid token" });
-      return;
+      return res.status(401).json({ error: "Invalid token" });
     }
 
     User.findOne({ email: decoded.email })
