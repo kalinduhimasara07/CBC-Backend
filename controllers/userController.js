@@ -231,3 +231,34 @@ export async function googleLogin(req, res) {
   }
 }
 
+export function updateUser(req, res) {
+  //check the token
+  if (req.user == null) {
+    return res
+      .status(403)
+      .json({ error: "You are not authorized to update users" });
+  }
+  const userId = req.params.userId;
+
+  if (!userId) {
+    return res.status(400).json({ error: "User ID is required" });
+  }
+
+  const updateData = req.body;
+
+  // Optional: Prevent certain fields from being updated (e.g., email, password)
+  // delete updateData.email;
+  // delete updateData.password;
+
+  User.updateOne({ _id: userId }, { $set: updateData })
+    .then((result) => {
+      if (result.matchedCount === 0) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      res.json({ message: "User updated successfully" });
+    })
+    .catch((error) => {
+      console.error("Error updating user:", error);
+      res.status(500).json({ error: "Error updating user" });
+    });
+}
