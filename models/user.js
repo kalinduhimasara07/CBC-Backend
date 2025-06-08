@@ -33,6 +33,14 @@ const userSchema = mongoose.Schema({
     required: false,
     default: "https://avatar.iran.liara.run/public/boy?username=Ash",
   },
+  phone: {
+    type: String,
+    required: false,
+  },
+  address: {
+    type: String,
+    required: false,
+  },
 });
 
 const User = mongoose.model("users", userSchema);

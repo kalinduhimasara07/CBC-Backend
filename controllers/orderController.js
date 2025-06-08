@@ -105,7 +105,7 @@ export async function getOrder(req, res) {
     return;
   }
   try {
-    if (req.user == "admin") {
+    if (req.user.role == "admin") {
       const orders = await Order.find({});
       return res.json(orders);
     } else {
