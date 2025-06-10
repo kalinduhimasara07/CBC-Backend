@@ -100,3 +100,30 @@ export async function getProductById(req, res) {
     res.status(500).json({ message: "Internal Server Error", error: error });
   }
 }
+
+
+
+const getFilteredProducts = async (req, res) => {
+  try {
+    const { categories, minPrice, maxPrice, search } = req.query;
+
+    let filters = {};
+    if (categories && categories.length > 0) {
+      filters.category = { $in: categories };
+    }
+    if (minPrice || maxPrice) {
+      filters.price = { $gte: minPrice || 0, $lte: maxPrice || 50000 };
+    }
+    if (search) {
+      filters.name = { $regex: search, $options: 'i' }; // case-insensitive search
+    }
+
+    const products = await Product.find(filters);
+    res.json(products);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching products" });
+  }
+};
+
+export { getFilteredProducts };
