@@ -62,3 +62,17 @@ export async function approveSiteReview(req, res) {
     res.status(500).json({ error: "Error approving site review" });
   }
 }
+
+export async function deleteSiteReview(req, res) {
+  if (!isAdmin) {
+    res.status(403).json({ error: "You are not authorized" });
+    return;
+  }
+  try {
+    await SiteReview.findByIdAndDelete(req.params.id);
+    res.json({ message: "Site review deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting site review:", error);
+    res.status(500).json({ error: "Error deleting site review" });
+  }
+}
