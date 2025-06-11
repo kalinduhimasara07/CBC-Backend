@@ -55,7 +55,5 @@ app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
 
-//mongodb+srv://admin:123@cluster0.n07ll.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
-//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImthbGluZHVAZ21haWwuY29tIiwiZmlyc3ROYW1lIjoia2FsaW5kdSIsImxhc3ROYW1lIjoiSGltYXNhcmEiLCJyb2xlIjoiYWRtaW4iLCJpbWciOiJodHRwczovL2F2YXRhci5pcmFuLmxpYXJhLnJ1bi9wdWJsaWMvYm95P3VzZXJuYW1lPUFzaCIsImlhdCI6MTc0MzM0NjczMn0.FGV_c-EuMPUUE7FAXxw_TTCFp3UsZEICRbCepLYXir0
 //email = kalindu@gmail.com
 //password = 123abcd

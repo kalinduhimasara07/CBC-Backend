@@ -42,3 +42,23 @@ export async function createSiteReview(req, res) {
     res.status(500).json({ error: "Error saving site review" });
   }
 }
+
+export async function approveSiteReview(req, res) {
+  if (!isAdmin) {
+    res.status(403).json({ error: "You are not authorized" });
+    return;
+  }
+  const status = req.body.isApproved;
+  try {
+    const siteReview = await SiteReview.findById(req.params.id);
+    if (!siteReview) {
+      return res.status(404).json({ error: "Site review not found" });
+    }
+    siteReview.isApproved = status;
+    await siteReview.save();
+    res.json({ message: "Site review approved successfully" });
+  } catch (error) {
+    console.error("Error approving site review:", error);
+    res.status(500).json({ error: "Error approving site review" });
+  }
+}

@@ -4,7 +4,7 @@ const siteReviewSchema = mongoose.Schema({
   email: { type: String, required: true },
   name: { type: String, required: true },
   date: { type: Date, default: Date.now },
-  profileImg: { type: String },
+  profileImg: { type: String, default: "https://avatar.iran.liara.run/public/boy?username=Ash" },
   rating: { type: Number, required: true },
   comment: { type: String, required: true },
   isApproved: { type: Boolean, required: true, default: false },
