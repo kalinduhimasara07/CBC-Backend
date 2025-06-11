@@ -3,22 +3,19 @@ import SiteReview from "../models/siteReview.js";
 import { isAdmin } from "./userController.js";
 
 export async function getSiteReviews(req, res) {
-  if (isAdmin) {
-    try {
-      const siteReviews = await SiteReview.find();
-      res.json(siteReviews);
-    } catch (error) {
-      console.error("Error fetching site reviews:", error);
-      res.status(500).json({ error: "Error fetching site reviews" });
+  const userRole = req.user?.role;
+
+  try {
+    if (userRole === "admin") {
+      const siteReviews = await SiteReview.find({});
+      return res.json(siteReviews);
     }
-  } else {
-    try {
-      const siteReviews = await SiteReview.find({ isApproved: true });
-      res.json(siteReviews);
-    } catch (error) {
-      console.error("Error fetching site reviews:", error);
-      res.status(500).json({ error: "Error fetching site reviews" });
-    }
+
+    const siteReviews = await SiteReview.find({ isApproved: true });
+    return res.json(siteReviews);
+  } catch (error) {
+    console.error("Error fetching site reviews:", error);
+    return res.status(500).json({ error: "Error fetching site reviews" });
   }
 }
 
