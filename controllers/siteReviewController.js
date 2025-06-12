@@ -28,7 +28,12 @@ export async function createSiteReview(req, res) {
   try {
     const order = await Order.findOne({ email });
     if (!order) {
-      return res.status(404).json({ error: "Order not found" });
+      return res
+        .status(404)
+        .json({
+          message:
+            "You can't create a site review! Because you don't have an order",
+        });
     } else {
       const siteReview = new SiteReview(req.body);
       await siteReview.save();

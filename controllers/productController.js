@@ -1,16 +1,6 @@
 import Product from "../models/product.js";
 import { isAdmin } from "./userController.js";
 
-// export function getProducts(req, res) {
-//   Product.find()
-//     .then((data) => {
-//       res.json(data);
-//     })
-//     .catch((error) => {
-//       console.error("Error fetching products:", error);
-//       res.status(500).json({ error: "Error fetching products" });
-//     });
-// }
 
 export async function getProducts(req, res) {
   try {
@@ -70,6 +60,12 @@ export async function updateProduct(req, res) {
   }
   const productId = req.params.productId;
   const updatingProduct = req.body;
+  const stock = req.body.stock;
+  if (stock == 0) {
+    updatingProduct.isAvailable = false;
+  }else {
+    updatingProduct.isAvailable = true;
+  }
   try {
     await Product.updateOne({ productId: productId }, updatingProduct);
     res.json({ message: "Product updated successfully" });
@@ -101,8 +97,6 @@ export async function getProductById(req, res) {
   }
 }
 
-
-
 const getFilteredProducts = async (req, res) => {
   try {
     const { categories, minPrice, maxPrice, search } = req.query;
@@ -115,7 +109,7 @@ const getFilteredProducts = async (req, res) => {
       filters.price = { $gte: minPrice || 0, $lte: maxPrice || 50000 };
     }
     if (search) {
-      filters.name = { $regex: search, $options: 'i' }; // case-insensitive search
+      filters.name = { $regex: search, $options: "i" }; // case-insensitive search
     }
 
     const products = await Product.find(filters);
