@@ -13,21 +13,17 @@ export async function getReviews(req, res) {
 
 export async function createReview(req, res) {
   try {
-    if (req.user.role !== "admin") {
-      return res.status(403).json({ error: "You are not authorized" });
+    if (!req.user) {
+      return res
+        .status(401)
+        .json({ error: "You must be logged in to create a review" });
     }
-
-    const { id, isApp } = req.body;
-
-    const updatedReview = await Order.findOneAndUpdate({ id }, { status });
-
-    if (!updatedReview) {
-      return res.status(404).json({ error: "Review not found" });
-    }
-
-    return res.json({
-      message: "Review status updated successfully",
-    });
+    const email = req.user.email;
+    const review = new Review(req.body);
+    // review.userId = req.user._id;
+    review.email = email;
+    await review.save();
+    return res.status(201).json({ message: "Review created successfully" });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Server error" });
