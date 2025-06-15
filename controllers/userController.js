@@ -3,6 +3,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import axios from "axios";
+import nodemailer from "nodemailer";
+import OTP from "../models/otp.js";
 dotenv.config();
 
 export function createUser(req, res) {
@@ -261,4 +263,67 @@ export function updateUser(req, res) {
       console.error("Error updating user:", error);
       res.status(500).json({ error: "Error updating user" });
     });
+}
+
+const transport = nodemailer.createTransport({
+  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
+export async function sendOTP(req, res) {
+  const randomOTP = Math.floor(100000 + Math.random() * 900000);
+  const email = req.body.email;
+  if (!email) {
+    return res.status(400).json({ error: "Email is required" });
+  }
+
+  const user = await User.findOne({ email: email });
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  //delete all existing OTPs for the user
+  await OTP.deleteMany({ email: email });
+
+  const otp = new OTP({ email: email, otp: randomOTP });
+  await otp.save();
+
+  transport
+    .sendMail({
+      from: process.env.EMAIL,
+      to: email,
+      subject: "OTP Verification",
+      text: `Your OTP is: ${randomOTP}`,
+    })
+    .then(() => {
+      res.json({ message: "OTP sent successfully", otp: randomOTP });
+    })
+    .catch((error) => {
+      console.error("Error sending OTP:", error);
+      res.status(500).json({ error: "Error sending OTP" });
+    });
+}
+
+export async function resetPassword(req, res) {
+  const { email, otp, newPassword } = req.body;
+  const user = await User.findOne({ email: email });
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+  const otpData = await OTP.findOne({ email: email });
+  if (!otpData) {
+    return res.status(404).json({ error: "OTP not found" });
+  }
+  if (otpData.otp !== otp) {
+    return res.status(400).json({ error: "Invalid OTP" });
+  }
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  user.password = hashedPassword;
+  await user.save();
+  res.json({ message: "Password reset successfully" });
 }

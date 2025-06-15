@@ -6,6 +6,8 @@ import {
   getUsers,
   googleLogin,
   loginUser,
+  resetPassword,
+  sendOTP,
   updateUser,
 } from "../controllers/userController.js";
 
@@ -18,5 +20,7 @@ userRouter.put("/", blockUser);
 userRouter.get("/user", getuser);
 userRouter.post("/google", googleLogin);
 userRouter.put("/:userId", updateUser);
+userRouter.post("/send-otp", sendOTP);
+userRouter.post("/reset-password", resetPassword);
 
 export default userRouter;
