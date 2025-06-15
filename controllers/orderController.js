@@ -13,10 +13,11 @@ export async function createOrder(req, res) {
   }
 
   const orderInfo = req.body;
+  // Use current user's name if not provided
   if (orderInfo.name == null) {
     orderInfo.name = req.user.firstName + " " + req.user.lastName;
   }
-
+  // Generate unique orderId
   let orderId = "CBC00001";
   const lastOrder = await Order.find().sort({ date: -1 }).limit(1);
   if (lastOrder.length > 0) {
@@ -31,7 +32,9 @@ export async function createOrder(req, res) {
     let total = 0;
     let labeledTotal = 0;
     const products = [];
+    const productDocs = [];
 
+    // Validate products and prepare order details
     for (let i = 0; i < orderInfo.products.length; i++) {
       const item = await Product.findOne({
         productId: orderInfo.products[i].productId,
@@ -53,6 +56,10 @@ export async function createOrder(req, res) {
         });
         return;
       }
+
+      // Save document for later stock update
+      productDocs.push(item);
+
       products[i] = {
         productInfo: {
           productId: item.productId,
@@ -93,6 +100,12 @@ export async function createOrder(req, res) {
       ).toFixed(2),
     });
     const createdOrder = await order.save();
+    // decrease stock of a product when an order is placed
+    // Decrease stock for each product
+    for (let i = 0; i < productDocs.length; i++) {
+      productDocs[i].stock -= orderInfo.products[i].quantity;
+      await productDocs[i].save();
+    }
     res.json({ message: "Order created successfully", order: createdOrder });
   } catch (error) {
     res.status(500).json({ error: "Error creating order" });
