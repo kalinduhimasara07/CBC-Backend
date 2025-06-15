@@ -1,7 +1,6 @@
 import Product from "../models/product.js";
 import { isAdmin } from "./userController.js";
 
-
 export async function getProducts(req, res) {
   try {
     if (isAdmin(req, res)) {
@@ -63,7 +62,7 @@ export async function updateProduct(req, res) {
   const stock = req.body.stock;
   if (stock == 0) {
     updatingProduct.isAvailable = false;
-  }else {
+  } else {
     updatingProduct.isAvailable = true;
   }
   try {
@@ -82,16 +81,18 @@ export async function getProductById(req, res) {
       res.status(404).json({ message: "Product not found" });
       return;
     }
-    if (product.isAvailable) {
-      res.json(product);
-    } else {
-      if (isAdmin(req, res)) {
-        res.json(product);
-      } else {
-        res.status(404).json({ message: "Product not found" });
-        return;
-      }
-    }
+    res.json(product);
+
+    // if (product.isAvailable) {
+    //   res.json(product);
+    // } else {
+    //   if (isAdmin(req, res)) {
+    //     res.json(product);
+    //   } else {
+    //     res.status(404).json({ message: "Product not found" });
+    //     return;
+    //   }
+    // }
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error", error: error });
   }
