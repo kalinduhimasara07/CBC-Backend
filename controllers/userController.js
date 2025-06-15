@@ -298,7 +298,31 @@ export async function sendOTP(req, res) {
       from: process.env.EMAIL,
       to: email,
       subject: "OTP Verification",
-      text: `Your OTP is: ${randomOTP}`,
+      html: `
+    <html>
+      <head>
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+        </style>
+        <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+      </head>
+      <body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f9f9f9;">
+        <div style="background-color: #e17100; padding: 20px; text-align: center;">
+          <h1 style="color: #fff; margin: 0; font-family: 'Great Vibes', cursive;">Crystal Beauty Clear</h1>
+          <p style="color: #fff; font-size: 18px;">Your trusted cosmetic products destination</p>
+        </div>
+        <div style="padding: 20px; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+          <h2 style="color: #333333;">Hello!</h2>
+          <p style="font-size: 16px; color: #333333;">Thank you for choosing Crystal Beauty Clear! We have received a request to verify your identity.</p>
+          <p style="font-size: 16px; color: #333333;">Here is your One-Time Password (OTP) for verification:</p>
+          <h3 style="font-size: 32px; color: #e17100; font-weight: bold;">${randomOTP}</h3>
+          <p style="font-size: 16px; color: #333333;">Please use this OTP to complete your verification process. This OTP will expire in 10 minutes.</p>
+          <p style="font-size: 14px; color: #888888; text-align: center; margin-top: 40px;">
+            If you did not request this OTP, please ignore this message. If you need assistance, feel free to reach out to us.
+          </p>
+        </div>
+      </body>
+    </html>`,
     })
     .then(() => {
       res.json({ message: "OTP sent successfully", otp: randomOTP });
