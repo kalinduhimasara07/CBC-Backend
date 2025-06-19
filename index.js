@@ -45,10 +45,7 @@ mongoose
     console.error("Error connecting to MongoDB:", error);
   });
 
-// Routes
-app.get("/", (req, res) => {
-  res.send("🚀 API is live on Azure");
-});
+
 
 app.use("/api/product", productRouter);
 app.use("/api/users", userRouter);
@@ -56,10 +53,8 @@ app.use("/api/orders", orderRouter);
 app.use("/api/reviews", reviewRouter);
 app.use("/api/siteReviews", siteReviewRouter);
 
-// ✅ Azure-compatible dynamic port
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.listen(3000, () => {
+  console.log("Server is running on port 3000");
 });
 
 //email = kalindu@gmail.com
