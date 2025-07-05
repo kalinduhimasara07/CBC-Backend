@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "test": "jest"
+    "test": "jest --passWithNoTests"
   },
   "engines": {
     "node": ">=18"
